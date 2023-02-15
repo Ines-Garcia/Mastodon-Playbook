@@ -2,36 +2,36 @@
 - name: Mastodon Deployement
   hosts: all
   tasks:
-    - name: Configurer dhclient
+    - name: Configure dhclient
       lineinfile:
         regexp: ^#?prepend domain-name-servers .$
         line: "prepend domain-name-servers 8.8.8.8;"
         path: /etc/dhcp/dhclient.conf
       register: dhclient_conf
 
-    - name: Redémarrer les serveurs
+    - name: Reload servers
       reboot:
       when: dhclient_conf.changed
 
-    - name: Mise à jour du système (apt)
+    - name: Update system (with apt)
       apt:
         update_cache: yes
         upgrade: yes
       when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
-    - name: Mise à jour du système (dnf)
+    - name: Update system (with dnf)
       dnf:
         update_cache: yes
         name: "*"
         state: latest
       when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat' or ansible_distribution == 'Fedora'
       
-    - name: Installation des dépendances
+    - name: Installation dependencies
       package:
-        name: "{{ dependances }}"
+        name: "{{ dependencies }}"
         state: latest
       vars:
-        dependances:
+        dependencies:
         - curl 
         - wget 
         - gnupg 
@@ -39,25 +39,25 @@
         - lsb-release 
         - ca-certificates  
 
-    - name: Installation de NodeJS
+    - name: Installation NodeJS
       shell: curl -sL https://deb.nodesource.com/setup_16.x | bash -  
 
-    - name: Installation de PostgreSQL
+    - name: Installation PostgreSQL
       get_url:
         attr: "-O"
         dest: /usr/share/keyrings/postgresql.asc 
         url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
         
-    - name: Ajout liste postgreSQL dans dossier apt
+    - name: Add postgresql apt file
       shell: echo "deb [signed-by=/usr/share/keyrings/postgresql.asc] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/postgresql.list 
 
-    - name: Installation paquets pour Mastodon
+    - name: Install packages pour Mastodon
       apt:
         update_cache: yes
         state: latest
-        name: "{{ paquets }}"   
+        name: "{{ packages }}"   
       vars:
-        paquets:
+        packages:
         - imagemagick 
         - ffmpeg 
         - libpq-dev 
@@ -91,3 +91,26 @@
         - libidn11-dev 
         - libicu-dev 
         - libjemalloc-dev
+        - yarn
+
+    - name: Enable CorePack
+      shell: corepack enable
+
+    - name: Set Yarn version to classic
+      shell: yarn set version classic
+      
+    - name: Add mastodon user
+      user:
+      name: mastodon
+      shell: /usr/sbin/nologin
+      state: present
+    
+    - name: Switch to mastodon user
+      become: yes
+      become_user: mastodon
+
+    - name: Add mastodon to sudo group
+      user:
+      name: mastodon
+      groups: sudo
+      append: yes  
