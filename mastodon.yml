@@ -1,5 +1,5 @@
 ---
-- name: Mastodon Deployement
+- name: Mastodon Deployment
   hosts: all
   tasks:
     - name: Configure dhclient
@@ -101,16 +101,19 @@
       
     - name: Add mastodon user
       user:
-      name: mastodon
-      shell: /usr/sbin/nologin
-      state: present
-    
+        name: mastodon
+        shell: /usr/sbin/nologin
+        create_home: true
+        state: present
+
     - name: Switch to mastodon user
-      become: yes
-      become_user: mastodon
+      user:
+        become: yes
+        become_method: su
+        become_user: mastodon
 
     - name: Add mastodon to sudo group
       user:
-      name: mastodon
-      groups: sudo
-      append: yes  
+        name: mastodon
+        groups: sudo
+        append: yes  
