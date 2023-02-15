@@ -25,3 +25,69 @@
         name: "*"
         state: latest
       when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat' or ansible_distribution == 'Fedora'
+      
+    - name: Installation des dépendances
+      package:
+        name: "{{ dependances }}"
+        state: latest
+      vars:
+        dependances:
+        - curl 
+        - wget 
+        - gnupg 
+        - apt-transport-https 
+        - lsb-release 
+        - ca-certificates  
+
+    - name: Installation de NodeJS
+      shell: curl -sL https://deb.nodesource.com/setup_16.x | bash -  
+
+    - name: Installation de PostgreSQL
+      get_url:
+        attr: "-O"
+        dest: /usr/share/keyrings/postgresql.asc 
+        url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+        
+    - name: Ajout liste postgreSQL dans dossier apt
+      shell: echo "deb [signed-by=/usr/share/keyrings/postgresql.asc] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/postgresql.list 
+
+    - name: Installation paquets pour Mastodon
+      apt:
+        update_cache: yes
+        state: latest
+        name: "{{ paquets }}"   
+      vars:
+        paquets:
+        - imagemagick 
+        - ffmpeg 
+        - libpq-dev 
+        - libxml2-dev 
+        - libxslt1-dev 
+        - file 
+        - git-core
+        - g++ 
+        - libprotobuf-dev 
+        - protobuf-compiler 
+        - pkg-config 
+        - nodejs 
+        - gcc 
+        - autoconf
+        - bison 
+        - build-essential 
+        - libssl-dev 
+        - libyaml-dev 
+        - libreadline6-dev
+        - zlib1g-dev 
+        - libncurses5-dev 
+        - libffi-dev 
+        - libgdbm-dev
+        - nginx 
+        - redis-server 
+        - redis-tools 
+        - postgresql 
+        - postgresql-contrib
+        - certbot 
+        - python3-certbot-nginx 
+        - libidn11-dev 
+        - libicu-dev 
+        - libjemalloc-dev
