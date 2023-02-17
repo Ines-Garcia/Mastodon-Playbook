@@ -99,21 +99,19 @@
     - name: Set Yarn version to classic
       shell: yarn set version classic
       
-    - name: Add mastodon user
-      user:
-        name: mastodon
-        shell: /usr/sbin/nologin
-        create_home: true
-        state: present
-
-    - name: Switch to mastodon user
-      user:
-        become: yes
-        become_method: su
-        become_user: mastodon
-
-    - name: Add mastodon to sudo group
+    - name: Create mastodon user
       user:
         name: mastodon
         groups: sudo
-        append: yes  
+        state: present
+        shell: /bin/bash
+        password: '*'
+
+    - name: Clone git repository rbenv
+      git:
+        repo: 'https://github.com/rbenv/rbenv.git'
+        dest: /home/mastodon/.rbenv
+        become: true
+        become_user: mastodon
+
+        
