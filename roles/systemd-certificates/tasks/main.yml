@@ -1,0 +1,26 @@
+---
+- name: Copy Mastodon systemd service files
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+    - src: /home/mastodon/live/dist/mastodon-sidekiq.service
+      dest: /etc/systemd/system
+    - src: /home/mastodon/live/dist/mastodon-streaming.service
+      dest: /etc/systemd/system
+    - src: /home/mastodon/live/dist/mastodon-web.service
+      dest: /etc/systemd/system
+  become: true
+  become_user: mastodon     
+
+- name: Enable Mastodon systemd services
+  systemd: 
+    name: "{{ services }}" 
+    enabled: yes
+  vars:
+    services:
+    - mastodon-sidekiq
+    - mastodon-streaming
+    - mastodon-web
+  become: true
+  become_user: mastodon         

@@ -89,13 +89,13 @@
 - name: Installation NodeJS
   shell: curl -sL https://deb.nodesource.com/setup_16.x | bash -  
 
-# - name: Enable CorePack
-#   shell: corepack enable
+- name: Enable CorePack
+  shell: corepack enable
 
-# - name: Set Yarn version to classic
-#   shell: yarn set version classic
+- name: Set Yarn version to classic
+  shell: yarn set version classic
 
-# - name: Copy .bashrc
-#   copy:
-#     src: .bashrc
-#     dest: /home/mastodon/.bashrc
+- name: Copy .bashrc
+  copy:
+    src: .bashrc
+    dest: /home/mastodon/.bashrc

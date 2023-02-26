@@ -8,8 +8,8 @@
 - name: Add postgresql apt file
   shell: echo "deb [signed-by=/usr/share/keyrings/postgresql.asc] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/postgresql.list 
 
-# - name: Create Mastodon user in PostgreSQL
-#   command: sudo -u postgres psql -c "CREATE USER mastodon CREATEDB;"
+- name: Create Mastodon user in PostgreSQL
+  command: sudo -u postgres psql -c "CREATE USER mastodon CREATEDB;"
 
 - name: Exit PostgreSQL shell
   command: sudo -u postgres psql -c "\q"  

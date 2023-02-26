@@ -1,0 +1,22 @@
+---
+- name: Install nginx
+  apt: 
+    name: nginx
+    state: latest
+    update_cache: yes
+
+- name: Remove base config nginx
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: Copy config nginx to sites-available
+  template:
+    src: nginx.conf
+    dest: /etc/nginx/sites-available/{{ domain_name }}.conf
+
+- name: Enable Mastodon nginx vhost template
+  file:
+    src: /etc/nginx/sites-available/{{ domain_name }}.conf
+    dest: /etc/nginx/sites-enabled/{{ domain_name }}.conf
+    state: link
