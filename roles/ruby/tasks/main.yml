@@ -1,0 +1,28 @@
+---
+- name: Clone git repository rbenv
+  git:
+    repo: 'https://github.com/rbenv/rbenv.git'
+    dest: /home/mastodon/.rbenv
+  become: true
+  become_user: mastodon
+
+- name: Clone rbenv git repository
+  git:
+    repo: 'https://github.com/rbenv/rbenv.git'
+    dest: /home/mastodon/.rbenv
+  become: true
+  become_user: mastodon
+
+- name: Install rbenv
+  shell: cd ~/.rbenv && src/configure && make -C src
+  args:
+    executable: /bin/bash
+  become: true
+  become_user: mastodon
+
+- name: Install ruby
+  git:
+    repo: 'https://github.com/rbenv/ruby-build.git'
+    dest: /home/mastodon/.rbenv/plugins/ruby-build
+  become: true
+  become_user: mastodon  

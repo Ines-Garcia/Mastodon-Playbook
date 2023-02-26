@@ -1,0 +1,101 @@
+---
+- name: Configure dhclient
+  lineinfile:
+    regexp: ^#?prepend domain-name-servers .$
+    line: "prepend domain-name-servers 8.8.8.8;"
+    path: /etc/dhcp/dhclient.conf
+  register: dhclient_conf
+
+- name: Reload servers
+  reboot:
+  when: dhclient_conf.changed
+
+- name: Update system (with apt)
+  apt:
+    update_cache: yes
+    upgrade: yes
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Update system (with dnf)
+  dnf:
+    update_cache: yes
+    name: "*"
+    state: latest
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat' or ansible_distribution == 'Fedora'
+
+- name: Create mastodon user
+  user:
+    name: mastodon
+    groups: sudo
+    state: present
+    shell: /bin/bash
+    password: '*'
+    
+- name: Installation dependencies
+  package:
+    name: "{{ dependencies }}"
+    state: latest
+  vars:
+    dependencies:
+    - curl 
+    - wget 
+    - gnupg 
+    - apt-transport-https 
+    - lsb-release 
+    - ca-certificates
+
+- name: Install packages pour Mastodon
+  apt:
+    update_cache: yes
+    state: latest
+    name: "{{ packages }}"   
+  vars:
+    packages:
+    - imagemagick 
+    - ffmpeg 
+    - libpq-dev 
+    - libxml2-dev 
+    - libxslt1-dev 
+    - file 
+    - git-core
+    - g++ 
+    - libprotobuf-dev 
+    - protobuf-compiler 
+    - pkg-config 
+    - nodejs 
+    - gcc 
+    - autoconf
+    - bison 
+    - build-essential 
+    - libssl-dev 
+    - libyaml-dev 
+    - libreadline6-dev
+    - zlib1g-dev 
+    - libncurses5-dev 
+    - libffi-dev 
+    - libgdbm-dev
+    - nginx 
+    - redis-server 
+    - redis-tools 
+    - postgresql 
+    - postgresql-contrib
+    - certbot 
+    - python3-certbot-nginx 
+    - libidn11-dev 
+    - libicu-dev 
+    - libjemalloc-dev
+    - yarn
+
+- name: Installation NodeJS
+  shell: curl -sL https://deb.nodesource.com/setup_16.x | bash -  
+
+# - name: Enable CorePack
+#   shell: corepack enable
+
+# - name: Set Yarn version to classic
+#   shell: yarn set version classic
+
+# - name: Copy .bashrc
+#   copy:
+#     src: .bashrc
+#     dest: /home/mastodon/.bashrc

@@ -1,0 +1,13 @@
+---
+- name: Install mastodon
+  git:
+    repo: 'https://github.com/mastodon/mastodon.git'
+    dest: /home/mastodon/live
+    version: "main"
+  become: true
+  become_user: mastodon
+  
+- name: Download latest stable release of mastodon
+  shell: cd /home/mastodon/live && git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1
+  become: true
+  become_user: mastodon

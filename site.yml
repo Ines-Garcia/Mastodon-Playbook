@@ -1,0 +1,9 @@
+---
+- name: Mastodon Deployment
+  hosts: all
+  roles:
+    - common
+    - postgresql
+    - nginx
+    - mastodon-source
+    - ruby
