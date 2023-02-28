@@ -1,2 +1,5 @@
 ---
 domain_name: mymastodon.com
+name_db: mastodon
+name_user: mastodon
+name_role: public

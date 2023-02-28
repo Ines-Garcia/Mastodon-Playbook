@@ -25,4 +25,4 @@
     repo: 'https://github.com/rbenv/ruby-build.git'
     dest: /home/mastodon/.rbenv/plugins/ruby-build
   become: true
-  become_user: mastodon  
+  become_user: mastodon
