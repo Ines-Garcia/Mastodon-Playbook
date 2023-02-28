@@ -81,7 +81,6 @@
     - postgresql-contrib
     - certbot 
     - python3-certbot-nginx
-    - python3-psycopg2
     - libidn11-dev 
     - libicu-dev 
     - libjemalloc-dev
@@ -90,13 +89,10 @@
 - name: Installation NodeJS
   shell: curl -sL https://deb.nodesource.com/setup_16.x | bash -  
 
-- name: Enable CorePack
-  command: corepack enable
+# - name: Enable CorePack
+#   command: corepack enable
 
-- name: Set Yarn version to classic
-  command: yarn set version classic
+# - name: Set Yarn version to classic
+#   command: yarn set version classic
 
-- name: Copy .bashrc
-  copy:
-    src: .bashrc
-    dest: /home/mastodon/.bashrc
+# Ces 2 tasks ne fonctionnent pas :/

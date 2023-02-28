@@ -5,16 +5,25 @@
     dest: /usr/share/keyrings/postgresql.asc 
     url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
 
+- name: Install packages pour PostgreSQL
+  apt:
+    update_cache: yes
+    state: latest
+    name: "{{ package }}"   
+  vars:
+    package:    
+      - python3-psycopg2
+
 - name: Add postgresql apt file
   shell: echo "deb [signed-by=/usr/share/keyrings/postgresql.asc] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/postgresql.list 
 
-- name: Create database postgresql
+- name: Create database PostgreSQL
   postgresql_db:
     name: "{{ name_db }}"
   become: true
   become_user: postgres
 
-- name: Create user postgresql
+- name: Create user PostgreSQL
   postgresql_user:
     name: "{{ name_user }}"
     db: "{{ name_db }}"

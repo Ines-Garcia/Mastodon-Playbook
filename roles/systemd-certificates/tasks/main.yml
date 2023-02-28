@@ -13,14 +13,23 @@
   become: true
   become_user: mastodon     
 
-- name: Enable Mastodon systemd services
+- name: Enable Mastodon systemd sidekiq service
   systemd: 
-    name: "{{ services }}" 
+    name: mastodon-sidekiq
     enabled: yes
-  vars:
-    services:
-    - mastodon-sidekiq
-    - mastodon-streaming
-    - mastodon-web
   become: true
-  become_user: mastodon         
+  become_user: mastodon
+
+- name: Enable Mastodon systemd streaming service
+  systemd: 
+    name: mastodon-streaming
+    enabled: yes
+  become: true
+  become_user: mastodon
+
+- name: Enable Mastodon systemd web service
+  systemd: 
+    name: mastodon-web
+    enabled: yes
+  become: true
+  become_user: mastodon  
