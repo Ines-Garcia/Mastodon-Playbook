@@ -1,9 +1,8 @@
 ---
 - name: Installation PostgreSQL
   get_url:
-    attr: "-O"
-    dest: /usr/share/keyrings/postgresql.asc 
-    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+  url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+  dest: /etc/apt/trusted.gpg.d/postgresql.asc
 
 - name: Install packages pour PostgreSQL
   apt:
@@ -37,4 +36,17 @@
     privs: ALL
     type: database
   become: true
-  become_user: postgres 
+  become_user: postgres
+
+- name: Activation et démarrage de PostgreSQL
+  systemd:
+    name: postgresql
+    state: started
+    enabled: true
+
+- name: Configuration de PostgreSQL
+  lineinfile:
+    regexp: ^#?listen_addresses = .*$
+    line: listen_addresses = '*'
+    path: /etc/postgresql/15/main/postgresql.conf
+  notify: Restart PostgreSQL
